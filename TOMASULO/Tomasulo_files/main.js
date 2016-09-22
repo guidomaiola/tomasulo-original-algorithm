@@ -1,11 +1,13 @@
 
-var $ = require('jquery');
-var DataTable = require('datatables.net')(window,$);
+
 
 $(document).ready( function () {
 
 
 	init();
+
+
+
     
 
 	function init() {
