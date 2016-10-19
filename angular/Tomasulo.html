@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html ng-app="tomasuloApp" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	    <title>Tomasulo Original - By Guido Maiola</title>
+
+	    <link href="./css/bootstrap.css" rel="stylesheet">
+	    <link href="./css/main.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="./css/jquery.dataTables.css">
+
+		<script src="./js/angular.js"></script>
+		<script src="./js/app.js"></script>
+
+  	</head>
+
+  	<body>
+
+    <div class="container" ng-controller="InstController">
+
+    	<div class="row">
+		    <div class="instructions col-md-8 col-md-offset-2">
+		    	<h3>Table of instructions:</h3>
+		        <table id="table_instr" class="display cell-border stripe compact">
+		            <thead>
+		                <tr>
+		                    <th>#</th>
+		                    <th>Instruction</th>
+		                    <th>Dst</th>
+		                    <th>Op 1</th>
+		                    <th>Op 2</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+		                <tr ng-repeat="i in instr_run">
+		                    <td>{{i.number}}</td>
+		                    <td>{{i.type}}</td>
+		                    <td>{{i.dst}}</td>
+		                    <td>{{i.op1}}</td>
+		                    <td>{{i.op2}}</td>
+		                </tr>
+		            </tbody>
+		        </table>
+		    </div>
+		</div>
+		<div class="row">
+		    <div class="add-instructions col-md-8 col-md-offset-2">
+		        <h4>Add instruction</h4>
+		        <div class="btn-group btn-grp-add-inst" role="group" aria-label="...">
+		        	<div class="btn-group">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{selectedInst.type}} <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu">
+							<li ng-repeat="inst in instructions"><a ng-click="select('type', inst.type)">{{inst.type}}</a></li>
+						</ul>
+		        	</div>
+
+        	       	<div class="btn-group">
+        				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{selectedInst.dst}} <span class="caret"></span>
+        				</button>
+        				<ul class="dropdown-menu">
+        					<li ng-repeat="reg in registers_bank"><a ng-click="select('dst', reg.name)">{{reg.name}}</a></li>
+        				</ul>
+        	       	</div>
+
+	       	       	<div class="btn-group">
+	       				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{selectedInst.op1}} <span class="caret"></span>
+	       				</button>
+	       				<ul class="dropdown-menu">
+	       					<li ng-repeat="reg in registers_bank"><a ng-click="select('op1', reg.name)">{{reg.name}}</a></li>
+	       				</ul>
+	       	       	</div>
+
+   	       	       	<div class="btn-group">
+   	       				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{selectedInst.op2}} <span class="caret"></span>
+   	       				</button>
+   	       				<ul class="dropdown-menu">
+   	       					<li ng-repeat="reg in registers_bank"><a ng-click="select('op2', reg.name)">{{reg.name}}</a></li>
+   	       				</ul>
+   	       	       	</div>
+   	       	       	<button id="btn-add" type="button" class="btn btn-default disabled">Add instruction</button>
+		        </div>
+		    </div>
+		</div>
+
+		<div class="row">
+		    <div class="cicle-per-instructions col-md-8 col-md-offset-2">
+		    	<h4>Set the number of cicles per instruction:</h4>
+
+		    	<div class="btn-group" role="group" aria-label="...">
+		    	  <button type="button" class="btn btn-default">ADD/SUB</button>
+
+		    	  <div class="btn-group" role="group">
+		    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    	      # cicles
+		    	      <span class="caret"></span>
+		    	    </button>
+		    	    <ul class="dropdown-menu">
+		    	      <li><a href="#">1</a></li>
+		    	      <li><a href="#">2</a></li>
+		    	      <li><a href="#">3</a></li>
+		    	      <li><a href="#">4</a></li>
+		    	      <li><a href="#">5</a></li>
+		    	      <li><a href="#">6</a></li>
+		    	      <li><a href="#">7</a></li>
+		    	      <li><a href="#">8</a></li>
+		    	      <li><a href="#">9</a></li>
+		    	      <li><a href="#">10</a></li>
+		    	    </ul>
+		    	  </div>
+		    	</div>
+
+		    	<div class="btn-group" role="group" aria-label="...">
+		    	  <button type="button" class="btn btn-default">MUL/DIV</button>
+
+		    	  <div class="btn-group" role="group">
+		    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    	      # cicles
+		    	      <span class="caret"></span>
+		    	    </button>
+		    	    <ul class="dropdown-menu">
+		    	      <li><a href="#">1</a></li>
+		    	      <li><a href="#">2</a></li>
+		    	      <li><a href="#">3</a></li>
+		    	      <li><a href="#">4</a></li>
+		    	      <li><a href="#">5</a></li>
+		    	      <li><a href="#">6</a></li>
+		    	      <li><a href="#">7</a></li>
+		    	      <li><a href="#">8</a></li>
+		    	      <li><a href="#">9</a></li>
+		    	      <li><a href="#">10</a></li>
+		    	    </ul>
+		    	  </div>
+		    	</div>
+
+		       	<div class="btn-group" role="group" aria-label="...">
+		       	  <button type="button" class="btn btn-default">LOAD</button>
+
+		       	  <div class="btn-group" role="group">
+		       	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		       	      # cicles
+		       	      <span class="caret"></span>
+		       	    </button>
+		       	    <ul class="dropdown-menu">
+		       	      <li><a href="#">1</a></li>
+		       	      <li><a href="#">2</a></li>
+		       	      <li><a href="#">3</a></li>
+		       	      <li><a href="#">4</a></li>
+		       	      <li><a href="#">5</a></li>
+		       	      <li><a href="#">6</a></li>
+		       	      <li><a href="#">7</a></li>
+		       	      <li><a href="#">8</a></li>
+		       	      <li><a href="#">9</a></li>
+		       	      <li><a href="#">10</a></li>
+		       	    </ul>
+		       	  </div>
+		       	</div>
+
+				<div class="btn-group" role="group" aria-label="...">
+				  <button type="button" class="btn btn-default">STORE</button>
+
+				  <div class="btn-group" role="group">
+				    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				      # cicles
+				      <span class="caret"></span>
+				    </button>
+				    <ul class="dropdown-menu">
+				      <li><a href="#">1</a></li>
+				      <li><a href="#">2</a></li>
+				      <li><a href="#">3</a></li>
+				      <li><a href="#">4</a></li>
+				      <li><a href="#">5</a></li>
+				      <li><a href="#">6</a></li>
+				      <li><a href="#">7</a></li>
+				      <li><a href="#">8</a></li>
+				      <li><a href="#">9</a></li>
+				      <li><a href="#">10</a></li>
+				    </ul>
+				  </div>
+				</div>
+		        
+		    </div>
+	    </div>
+
+	    <div class="row">
+		    <div class="control-buttons col-md-9 col-md-offset-1">
+				<h3>Set / Reset options:</h3>
+					<button type="button" class="btn btn-default" id="btn-set">Set</button>
+		    		<button type="button" class="btn btn-default" id="btn-reset">Reset</button>
+
+		    	<h3>Start execution:</h3>
+			    	<button type="button" class="btn btn-default" id="btn-run">RUN CYCLE</button>
+
+		    </div>
+	    </div>
+
+	    <div class="row">
+	    	<div class="adder-table col-md-3 col-md-offset-1">
+	    		<h3>Adder</h3>
+	    	    <table id="table_adder" class="display cell-border stripe compact">
+	    	        <thead>
+	    	            <tr>
+	    	            	<th>Inst</th>
+	    	            	<th>#</th>
+	    	                <th>Tag</th>
+	    	                <th>Op1</th>
+	    	                <th>Tag</th>
+	    	                <th>Op 2</th>
+	    	            </tr>
+	    	        </thead>
+	    	        <tbody>
+	    	            <tr>
+	    	            	<td></td>
+	    	            	<td>1</td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	            </tr>
+	    	            <tr>
+	    	            	<td></td>
+	    	            	<td>2</td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	            </tr>
+	    	            <tr>
+	    	            	<td></td>
+	    	            	<td>3</td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	            </tr>
+	    	        </tbody>
+	    	    </table>
+	    	</div>
+
+	    	<div class="mult-table col-md-3">
+	    		<h3>Mul/Div</h3>
+	    	    <table id="table_mult" class="display cell-border stripe compact">
+	    	        <thead>
+	    	            <tr>
+	    	            	<th>Inst</th>
+	    	            	<th>#</th>
+	    	                <th>Tag</th>
+	    	                <th>Op1</th>
+	    	                <th>Tag</th>
+	    	                <th>Op 2</th>
+	    	            </tr>
+	    	        </thead>
+	    	        <tbody>
+	    	            <tr>
+	    	            	<td></td>
+	    	            	<td>1</td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	            </tr>
+	    	            <tr>
+	    	            	<td></td>
+	    	            	<td>2</td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	            </tr>
+	    	        </tbody>
+	    	    </table>
+	    	</div>
+	    	<div class="reg-table col-md-3 col-md-offset-1">
+	    		<h3>Register Bank</h3>
+	    	    <table id="table_reg" class="display cell-border stripe compact">
+	    	        <thead>
+	    	            <tr>
+	    	                <th>Register #</th>
+	    	                <th>Busy</th>
+	    	                <th>Tag</th>
+	    	                <th>Data</th>
+	    	            </tr>
+	    	        </thead>
+	    	        <tbody>
+	    	            <tr>
+	    	                <td>0</td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	            </tr>
+	    	            <tr>
+	    	                <td>2</td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	            </tr>
+	    	            <tr>
+	    	                <td>4</td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	            </tr>
+	    	            <tr>
+	    	                <td>6</td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	            </tr>
+	    	            <tr>
+	    	                <td>8</td>
+	    	                <td></td>
+	    	                <td></td>
+	    	                <td></td>
+	    	            </tr>
+	    	        </tbody>
+	    	    </table>
+	    	</div>
+    	</div>
+    </div>
+
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.js"></script>
+    <script src="./js/main.js"></script>
+
+    <script src="./js/jquery.dataTables.js"></script>
+
+</body></html>

@@ -1,0 +1,72 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', '-g', 'grunt-cli' ]
+2 info using npm@3.10.8
+3 info using node@v0.10.37
+4 silly loadCurrentTree Starting
+5 silly install loadCurrentTree
+6 silly install readGlobalPackageData
+7 silly fetchPackageMetaData grunt-cli
+8 silly fetchNamedPackageData grunt-cli
+9 silly mapToRegistry name grunt-cli
+10 silly mapToRegistry using default registry
+11 silly mapToRegistry registry https://registry.npmjs.org/
+12 silly mapToRegistry data { raw: 'grunt-cli',
+12 silly mapToRegistry   scope: null,
+12 silly mapToRegistry   escapedName: 'grunt-cli',
+12 silly mapToRegistry   name: 'grunt-cli',
+12 silly mapToRegistry   rawSpec: '',
+12 silly mapToRegistry   spec: 'latest',
+12 silly mapToRegistry   type: 'tag' }
+13 silly mapToRegistry uri https://registry.npmjs.org/grunt-cli
+14 verbose request uri https://registry.npmjs.org/grunt-cli
+15 verbose request no auth needed
+16 info attempt registry request try #1 at 17:44:25
+17 verbose request id af1de7de3b4cb186
+18 http request GET https://registry.npmjs.org/grunt-cli
+19 info retry will retry, error on last attempt: Error: tunneling socket could not be established, cause=socket hang up
+20 info attempt registry request try #2 at 17:44:35
+21 http request GET https://registry.npmjs.org/grunt-cli
+22 info retry will retry, error on last attempt: Error: tunneling socket could not be established, cause=socket hang up
+23 info attempt registry request try #3 at 17:45:35
+24 http request GET https://registry.npmjs.org/grunt-cli
+25 silly fetchPackageMetaData Error: tunneling socket could not be established, cause=socket hang up
+25 silly fetchPackageMetaData     at ClientRequest.onError (/usr/local/lib/node_modules/npm/node_modules/request/node_modules/tunnel-agent/index.js:176:17)
+25 silly fetchPackageMetaData     at ClientRequest.g (events.js:180:16)
+25 silly fetchPackageMetaData     at ClientRequest.emit (events.js:95:17)
+25 silly fetchPackageMetaData     at CleartextStream.socketErrorListener (http.js:1548:9)
+25 silly fetchPackageMetaData     at CleartextStream.emit (events.js:95:17)
+25 silly fetchPackageMetaData     at SecurePair.<anonymous> (tls.js:1411:15)
+25 silly fetchPackageMetaData     at SecurePair.emit (events.js:95:17)
+25 silly fetchPackageMetaData     at SecurePair.error (tls.js:1018:27)
+25 silly fetchPackageMetaData     at EncryptedStream.CryptoStream._done (tls.js:703:22)
+25 silly fetchPackageMetaData     at CleartextStream.read [as _read] (tls.js:499:24)
+25 silly fetchPackageMetaData  error for grunt-cli { [Error: tunneling socket could not be established, cause=socket hang up] code: 'ECONNRESET' }
+26 silly rollbackFailedOptional Starting
+27 silly rollbackFailedOptional Finishing
+28 silly runTopLevelLifecycles Finishing
+29 silly install printInstalled
+30 verbose stack Error: tunneling socket could not be established, cause=socket hang up
+30 verbose stack     at ClientRequest.onError (/usr/local/lib/node_modules/npm/node_modules/request/node_modules/tunnel-agent/index.js:176:17)
+30 verbose stack     at ClientRequest.g (events.js:180:16)
+30 verbose stack     at ClientRequest.emit (events.js:95:17)
+30 verbose stack     at CleartextStream.socketErrorListener (http.js:1548:9)
+30 verbose stack     at CleartextStream.emit (events.js:95:17)
+30 verbose stack     at SecurePair.<anonymous> (tls.js:1411:15)
+30 verbose stack     at SecurePair.emit (events.js:95:17)
+30 verbose stack     at SecurePair.error (tls.js:1018:27)
+30 verbose stack     at EncryptedStream.CryptoStream._done (tls.js:703:22)
+30 verbose stack     at CleartextStream.read [as _read] (tls.js:499:24)
+31 verbose cwd /home/guido/workspace-g/tomasulo-original-algorithm
+32 error Linux 3.16.0-71-generic
+33 error argv "node" "/usr/local/bin/npm" "install" "-g" "grunt-cli"
+34 error node v0.10.37
+35 error npm  v3.10.8
+36 error code ECONNRESET
+37 error network tunneling socket could not be established, cause=socket hang up
+38 error network This is most likely not a problem with npm itself
+38 error network and is related to network connectivity.
+38 error network In most cases you are behind a proxy or have bad network settings.
+38 error network
+38 error network If you are behind a proxy, please make sure that the
+38 error network 'proxy' config is set properly.  See: 'npm help config'
+39 verbose exit [ 1, true ]
