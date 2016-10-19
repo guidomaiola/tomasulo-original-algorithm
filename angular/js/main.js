@@ -6,8 +6,6 @@ $(document).ready( function () {
         var table_mult = $('#table_mult');
         var table_reg = $('#table_reg');
 
-        var registers = ['R0', 'R2', 'R4', 'R6', 'R8'];
-
 	init();
 
 

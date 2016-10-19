@@ -5,7 +5,7 @@
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	    <title>Tomasulo Original - By Guido Maiola</title>
+	    <title>Tomasulo Original Webapp - By Guido Maiola (guidomaiola@gmail.com)</title>
 
 	    <link href="./css/bootstrap.css" rel="stylesheet">
 	    <link href="./css/main.css" rel="stylesheet">
@@ -18,7 +18,7 @@
 
   	<body>
 
-    <div class="container" ng-controller="InstController">
+    <div class="container" ng-controller="InstController as ctrl">
 
     	<div class="row">
 		    <div class="instructions col-md-8 col-md-offset-2">
@@ -34,7 +34,7 @@
 		                </tr>
 		            </thead>
 		            <tbody>
-		                <tr ng-repeat="i in instr_run">
+		                <tr ng-model="ctrl.instr_run" ng-repeat="i in ctrl.instr_run">
 		                    <td>{{i.number}}</td>
 		                    <td>{{i.type}}</td>
 		                    <td>{{i.dst}}</td>
@@ -50,37 +50,37 @@
 		        <h4>Add instruction</h4>
 		        <div class="btn-group btn-grp-add-inst" role="group" aria-label="...">
 		        	<div class="btn-group">
-						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{selectedInst.type}} <span class="caret"></span>
+						<button type="button" class="btn btn-default dropdown-toggle" ng-model="ctrl.selectedInst.type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{ctrl.selectedInst.type}} <span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
-							<li ng-repeat="inst in instructions"><a ng-click="select('type', inst.type)">{{inst.type}}</a></li>
+							<li ng-repeat="inst in ctrl.instructions"><a ng-click="ctrl.select('type', inst.type)">{{inst.type}}</a></li>
 						</ul>
 		        	</div>
 
         	       	<div class="btn-group">
-        				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{selectedInst.dst}} <span class="caret"></span>
+        				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{ctrl.selectedInst.dst}} <span class="caret"></span>
         				</button>
         				<ul class="dropdown-menu">
-        					<li ng-repeat="reg in registers_bank"><a ng-click="select('dst', reg.name)">{{reg.name}}</a></li>
+        					<li ng-repeat="reg in ctrl.registers_bank"><a ng-click="ctrl.select('dst', reg.name)">{{reg.name}}</a></li>
         				</ul>
         	       	</div>
 
 	       	       	<div class="btn-group">
-	       				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{selectedInst.op1}} <span class="caret"></span>
+	       				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{ctrl.selectedInst.op1}} <span class="caret"></span>
 	       				</button>
 	       				<ul class="dropdown-menu">
-	       					<li ng-repeat="reg in registers_bank"><a ng-click="select('op1', reg.name)">{{reg.name}}</a></li>
+	       					<li ng-repeat="reg in ctrl.registers_bank"><a ng-click="ctrl.select('op1', reg.name)">{{reg.name}}</a></li>
 	       				</ul>
 	       	       	</div>
 
    	       	       	<div class="btn-group">
-   	       				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{selectedInst.op2}} <span class="caret"></span>
+   	       				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{ctrl.selectedInst.op2}} <span class="caret"></span>
    	       				</button>
    	       				<ul class="dropdown-menu">
-   	       					<li ng-repeat="reg in registers_bank"><a ng-click="select('op2', reg.name)">{{reg.name}}</a></li>
+   	       					<li ng-repeat="reg in ctrl.registers_bank"><a ng-click="ctrl.select('op2', reg.name)">{{reg.name}}</a></li>
    	       				</ul>
    	       	       	</div>
-   	       	       	<button id="btn-add" type="button" class="btn btn-default disabled">Add instruction</button>
+   	       	       	<button id="btn-add" type="button" class="btn btn-default disabled" ng-click='ctrl.putInstInTable()'>Add instruction</button>
 		        </div>
 		    </div>
 		</div>
