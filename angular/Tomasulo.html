@@ -34,7 +34,7 @@
 		                </tr>
 		            </thead>
 		            <tbody>
-		                <tr ng-model="ctrl.instr_run" ng-repeat="i in ctrl.instr_run">
+		                <tr ng-repeat="i in ctrl.instr_run">
 		                    <td>{{i.number}}</td>
 		                    <td>{{i.type}}</td>
 		                    <td>{{i.dst}}</td>
@@ -50,7 +50,7 @@
 		        <h4>Add instruction</h4>
 		        <div class="btn-group btn-grp-add-inst" role="group" aria-label="...">
 		        	<div class="btn-group">
-						<button type="button" class="btn btn-default dropdown-toggle" ng-model="ctrl.selectedInst.type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{ctrl.selectedInst.type}} <span class="caret"></span>
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{ctrl.selectedInst.type}} <span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
 							<li ng-repeat="inst in ctrl.instructions"><a ng-click="ctrl.select('type', inst.type)">{{inst.type}}</a></li>
@@ -74,7 +74,7 @@
 	       	       	</div>
 
    	       	       	<div class="btn-group">
-   	       				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{ctrl.selectedInst.op2}} <span class="caret"></span>
+   	       				<button type="button" id="btn-op2" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> {{ctrl.selectedInst.op2}} <span class="caret"></span>
    	       				</button>
    	       				<ul class="dropdown-menu">
    	       					<li ng-repeat="reg in ctrl.registers_bank"><a ng-click="ctrl.select('op2', reg.name)">{{reg.name}}</a></li>
