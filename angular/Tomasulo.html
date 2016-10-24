@@ -18,12 +18,12 @@
 
   	<body>
 
-    <div class="container" ng-controller="InstController as ctrl">
+    <div class="container" ng-controller="InstController as ctrl" data-ng-init="init()">
 
     	<div class="row">
 		    <div class="instructions col-md-8 col-md-offset-2">
 		    	<h3>Table of instructions:</h3>
-		        <table id="table_instr" class="display cell-border stripe compact">
+		        <table id="table_instr" class="table table-bordered table-striped">
 		            <thead>
 		                <tr>
 		                    <th>#</th>
@@ -80,7 +80,7 @@
    	       					<li ng-repeat="reg in ctrl.registers_bank"><a ng-click="ctrl.select('op2', reg.name)">{{reg.name}}</a></li>
    	       				</ul>
    	       	       	</div>
-   	       	       	<button id="btn-add" type="button" class="btn btn-default disabled" ng-click='ctrl.putInstInTable()'>Add instruction</button>
+   	       	       	<button id="btn-add" type="button" class="btn btn-default disabled" ng-click="ctrl.putInstInTable()">Add instruction</button>
 		        </div>
 		    </div>
 		</div>
@@ -187,11 +187,11 @@
 	    <div class="row">
 		    <div class="control-buttons col-md-9 col-md-offset-1">
 				<h3>Set / Reset options:</h3>
-					<button type="button" class="btn btn-default" id="btn-set">Set</button>
-		    		<button type="button" class="btn btn-default" id="btn-reset">Reset</button>
+					<button type="button" class="btn btn-default" id="btn-set" ng-click="ctrl.set()">Set</button>
+		    		<button type="button" class="btn btn-default" id="btn-reset" ng-click="ctrl.reset()">Reset</button>
 
 		    	<h3>Start execution:</h3>
-			    	<button type="button" class="btn btn-default" id="btn-run">RUN CYCLE</button>
+			    	<button type="button" class="btn btn-default disabled" id="btn-run">RUN CYCLE</button>
 
 		    </div>
 	    </div>
@@ -199,7 +199,7 @@
 	    <div class="row">
 	    	<div class="adder-table col-md-3 col-md-offset-1">
 	    		<h3>Adder</h3>
-	    	    <table id="table_adder" class="display cell-border stripe compact">
+	    	    <table id="table_adder" class="table table-bordered table-striped">
 	    	        <thead>
 	    	            <tr>
 	    	            	<th>Inst</th>
@@ -211,37 +211,21 @@
 	    	            </tr>
 	    	        </thead>
 	    	        <tbody>
-	    	            <tr>
-	    	            	<td></td>
-	    	            	<td>1</td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	            </tr>
-	    	            <tr>
-	    	            	<td></td>
-	    	            	<td>2</td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	            </tr>
-	    	            <tr>
-	    	            	<td></td>
-	    	            	<td>3</td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	            </tr>
+	    	            <tr ng-repeat="i in ctrl.table_adder">
+		                    <td>{{i.inst}}</td>
+		                    <td>{{i.number}}</td>
+		                    <td>{{i.tag1}}</td>
+		                    <td>{{i.op1}}</td>
+		                    <td>{{i.tag2}}</td>
+		                    <td>{{i.op2}}</td>
+		                </tr>
 	    	        </tbody>
 	    	    </table>
 	    	</div>
 
 	    	<div class="mult-table col-md-3">
 	    		<h3>Mul/Div</h3>
-	    	    <table id="table_mult" class="display cell-border stripe compact">
+	    	    <table id="table_mult" class="table table-bordered table-striped">
 	    	        <thead>
 	    	            <tr>
 	    	            	<th>Inst</th>
@@ -253,28 +237,20 @@
 	    	            </tr>
 	    	        </thead>
 	    	        <tbody>
-	    	            <tr>
-	    	            	<td></td>
-	    	            	<td>1</td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	            </tr>
-	    	            <tr>
-	    	            	<td></td>
-	    	            	<td>2</td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	            </tr>
+	    	            <tr ng-repeat="i in ctrl.table_mult">
+		                    <td>{{i.inst}}</td>
+		                    <td>{{i.number}}</td>
+		                    <td>{{i.tag1}}</td>
+		                    <td>{{i.op1}}</td>
+		                    <td>{{i.tag2}}</td>
+		                    <td>{{i.op2}}</td>
+		                </tr>
 	    	        </tbody>
 	    	    </table>
 	    	</div>
 	    	<div class="reg-table col-md-3 col-md-offset-1">
 	    		<h3>Register Bank</h3>
-	    	    <table id="table_reg" class="display cell-border stripe compact">
+	    	    <table id="table_reg" class="table table-bordered table-striped">
 	    	        <thead>
 	    	            <tr>
 	    	                <th>Register #</th>
@@ -284,36 +260,12 @@
 	    	            </tr>
 	    	        </thead>
 	    	        <tbody>
-	    	            <tr>
-	    	                <td>0</td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	            </tr>
-	    	            <tr>
-	    	                <td>2</td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	            </tr>
-	    	            <tr>
-	    	                <td>4</td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	            </tr>
-	    	            <tr>
-	    	                <td>6</td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	            </tr>
-	    	            <tr>
-	    	                <td>8</td>
-	    	                <td></td>
-	    	                <td></td>
-	    	                <td></td>
-	    	            </tr>
+	    	            <tr ng-repeat="i in ctrl.table_reg">
+		                    <td>{{i.number}}</td>
+		                    <td>{{i.busy}}</td>
+		                    <td>{{i.tag}}</td>
+		                    <td>{{i.data}}</td>
+		                </tr>
 	    	        </tbody>
 	    	    </table>
 	    	</div>
@@ -322,7 +274,6 @@
 
     <script src="./js/jquery.min.js"></script>
     <script src="./js/bootstrap.js"></script>
-    <script src="./js/main.js"></script>
 
     <script src="./js/jquery.dataTables.js"></script>
 
