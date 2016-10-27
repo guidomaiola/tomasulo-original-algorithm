@@ -20,12 +20,14 @@ app.controller('InstController', function() {
     this.selectedInst = jQuery.extend(true, {}, this.defaultInst);
 
     this.instructions = [
-    {type:'ADD', cycles: 1},
-    {type:'SUBD', cycles: 1},
-    {type:'MULD', cycles: 1},
-    {type:'DIV', cycles: 1},
-    {type:'ST', cycles: 1},
-    {type:'LD', cycles: 1}];
+    {type:'ADD', cycles: '#cycles'},
+    {type:'SUBD', cycles: '#cycles'},
+    {type:'MULD', cycles: '#cycles'},
+    {type:'DIV', cycles: '#cycles'},
+    {type:'ST', cycles: '#cycles'},
+    {type:'LD', cycles: '#cycles'}];
+
+    this.instructionsCycles = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
     this.registers_bank = [
     {name: 'r0', value: '0'},
@@ -70,6 +72,22 @@ app.controller('InstController', function() {
         this.selectedInst[field] = instruction;
         this.updateBtns();
     };
+
+	this.selectCycle = function(op, instCycle) {
+		var instArray = this.instructions;
+		$.each(instArray, function() {
+    		if (this.type == op) {
+        		this.cycles = instCycle;
+        	}
+    	});
+	};
+
+	this.resetInstCycles = function() {
+		var instArray = this.instructions;
+		$.each(instArray, function() {
+        	this.cycles = '#cycles';
+    	});
+	};
 
     this.isMemInst = function() {
     	var selected = this.selectedInst;
@@ -159,7 +177,7 @@ app.controller('InstController', function() {
 
             this.instr_run = [];
             this.table_reg = this.setRegTable();
-            
+            this.resetInstCycles();
     };
 
     
