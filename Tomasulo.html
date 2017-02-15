@@ -183,7 +183,7 @@
 		    		<button type="button" class="btn btn-default" id="btn-reset" ng-click="ctrl.reset()">Reset</button>
 
 		    	<h3>Start execution:</h3>
-			    	<button type="button" class="btn btn-default disabled" id="btn-run">RUN CYCLE</button>
+			    	<button type="button" class="btn btn-default disabled" id="btn-run" ng-click="ctrl.run()" ng-disabled="!ctrl.keepRunning()">RUN CYCLE</button>
 
 		    </div>
 	    </div>
