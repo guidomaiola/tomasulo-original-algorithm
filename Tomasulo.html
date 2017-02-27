@@ -23,7 +23,7 @@
     	<div class="row">
 		    <div class="instructions col-md-8 col-md-offset-2">
 		    	<h3>Table of instructions:</h3>
-		        <table id="table_instr" class="table table-bordered table-striped">
+		        <table class="table table-bordered table-striped">
 		            <thead>
 		                <tr>
 		                    <th>#</th>
@@ -35,7 +35,7 @@
 		            </thead>
 		            <tbody>
 		                <tr ng-repeat="i in ctrl.instr_run">
-		                    <td>{{i.number}}</td>
+		                    <td>{{i.id}}</td>
 		                    <td>{{i.type}}</td>
 		                    <td>{{i.dst}}</td>
 		                    <td>{{i.op1}}</td>
@@ -90,7 +90,7 @@
 		    	<h4>Set the number of cycles per instruction:</h4>
 
 		    	<div class="btn-group" role="group" aria-label="...">
-		    	  <button type="button" class="btn btn-default">{{ctrl.instructions[0].type}}</button>
+		    	  <button type="button" class="btn btn-default">ADD/SUB</button>
 
 		    	  <div class="btn-group" role="group">
 		    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -104,21 +104,7 @@
 		    	</div>
 
 		    	<div class="btn-group" role="group" aria-label="...">
-		    	  <button type="button" class="btn btn-default">{{ctrl.instructions[1].type}}</button>
-
-		    	  <div class="btn-group" role="group">
-		    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		    	      {{ctrl.instructions[1].cycles}}
-		    	      <span class="caret"></span>
-		    	    </button>
-		    	    <ul class="dropdown-menu">
-		    	    	<li ng-repeat="instCycle in ctrl.instructionsCycles"><a ng-click="ctrl.selectCycle('SUBD', instCycle)">{{instCycle}}</a></li>
-		    	    </ul>
-		    	  </div>
-		    	</div>
-
-		    	<div class="btn-group" role="group" aria-label="...">
-		    	  <button type="button" class="btn btn-default">{{ctrl.instructions[2].type}}</button>
+		    	  <button type="button" class="btn btn-default">MULT/DIV</button>
 
 		    	  <div class="btn-group" role="group">
 		    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -131,22 +117,8 @@
 		    	  </div>
 		    	</div>
 
-		    	<div class="btn-group" role="group" aria-label="...">
-		    	  <button type="button" class="btn btn-default">{{ctrl.instructions[3].type}}</button>
-
-		    	  <div class="btn-group" role="group">
-		    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		    	      {{ctrl.instructions[3].cycles}}
-		    	      <span class="caret"></span>
-		    	    </button>
-		    	    <ul class="dropdown-menu">
-		    	      	<li ng-repeat="instCycle in ctrl.instructionsCycles"><a ng-click="ctrl.selectCycle('DIV', instCycle)">{{instCycle}}</a></li>
-		    	    </ul>
-		    	  </div>
-		    	</div>
-
 		       	<div class="btn-group" role="group" aria-label="...">
-		    	  <button type="button" class="btn btn-default">{{ctrl.instructions[4].type}}</button>
+		    	  <button type="button" class="btn btn-default">ST/LD</button>
 
 		    	  <div class="btn-group" role="group">
 		    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -155,20 +127,6 @@
 		    	    </button>
 		    	    <ul class="dropdown-menu">
 		    	      	<li ng-repeat="instCycle in ctrl.instructionsCycles"><a ng-click="ctrl.selectCycle('ST', instCycle)">{{instCycle}}</a></li>
-		    	    </ul>
-		    	  </div>
-		    	</div>
-
-				<div class="btn-group" role="group" aria-label="...">
-		    	  <button type="button" class="btn btn-default">{{ctrl.instructions[5].type}}</button>
-
-		    	  <div class="btn-group" role="group">
-		    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		    	      {{ctrl.instructions[5].cycles}}
-		    	      <span class="caret"></span>
-		    	    </button>
-		    	    <ul class="dropdown-menu">
-		    	      	<li ng-repeat="instCycle in ctrl.instructionsCycles"><a ng-click="ctrl.selectCycle('LD', instCycle)">{{instCycle}}</a></li>
 		    	    </ul>
 		    	  </div>
 		    	</div>
@@ -191,25 +149,27 @@
 	    <div class="row">
 	    	<div class="adder-table col-md-3 col-md-offset-1">
 	    		<h3>Adder</h3>
-	    	    <table id="table_adder" class="table table-bordered table-striped">
+	    	    <table class="table table-bordered table-striped">
 	    	        <thead>
 	    	            <tr>
-	    	            	<th>Inst</th>
 	    	            	<th>#</th>
+	    	            	<th>Ins</th>
 	    	                <th>Tag</th>
 	    	                <th>Op1</th>
 	    	                <th>Tag</th>
 	    	                <th>Op 2</th>
+	    	                <th>Dst</th>
 	    	            </tr>
 	    	        </thead>
 	    	        <tbody>
-	    	            <tr ng-repeat="i in ctrl.table_adder">
-		                    <td>{{i.inst}}</td>
-		                    <td>{{i.number}}</td>
+	    	            <tr ng-repeat="i in ctrl.adder">
+		                    <td>{{i.pos}}</td>
+		                    <td>{{i.id}}</td>
 		                    <td>{{i.tag1}}</td>
 		                    <td>{{i.op1}}</td>
 		                    <td>{{i.tag2}}</td>
 		                    <td>{{i.op2}}</td>
+		                    <td>{{i.dst}}</td>
 		                </tr>
 	    	        </tbody>
 	    	    </table>
@@ -217,32 +177,34 @@
 
 	    	<div class="mult-table col-md-3">
 	    		<h3>Mul/Div</h3>
-	    	    <table id="table_mult" class="table table-bordered table-striped">
+	    	    <table class="table table-bordered table-striped">
 	    	        <thead>
 	    	            <tr>
-	    	            	<th>Inst</th>
 	    	            	<th>#</th>
+	    	            	<th>Ins</th>
 	    	                <th>Tag</th>
 	    	                <th>Op1</th>
 	    	                <th>Tag</th>
 	    	                <th>Op 2</th>
+	    	                <th>Dst</th>
 	    	            </tr>
 	    	        </thead>
 	    	        <tbody>
-	    	            <tr ng-repeat="i in ctrl.table_mult">
-		                    <td>{{i.inst}}</td>
-		                    <td>{{i.number}}</td>
+	    	            <tr ng-repeat="i in ctrl.mult">
+		                    <td>{{i.pos}}</td>
+		                    <td>{{i.id}}</td>
 		                    <td>{{i.tag1}}</td>
 		                    <td>{{i.op1}}</td>
 		                    <td>{{i.tag2}}</td>
 		                    <td>{{i.op2}}</td>
+		                    <td>{{i.dst}}</td>
 		                </tr>
 	    	        </tbody>
 	    	    </table>
 	    	</div>
 	    	<div class="reg-table col-md-3 col-md-offset-1">
 	    		<h3>Register Bank</h3>
-	    	    <table id="table_reg" class="table table-bordered table-striped">
+	    	    <table class="table table-bordered table-striped">
 	    	        <thead>
 	    	            <tr>
 	    	                <th>Register #</th>
@@ -252,7 +214,7 @@
 	    	            </tr>
 	    	        </thead>
 	    	        <tbody>
-	    	            <tr ng-repeat="i in ctrl.table_reg">
+	    	            <tr ng-repeat="i in ctrl.reg">
 		                    <td>{{i.number}}</td>
 		                    <td>{{i.busy}}</td>
 		                    <td>{{i.tag}}</td>

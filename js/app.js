@@ -3,11 +3,6 @@ var app = angular.module('tomasuloApp', []);
 
 app.controller('InstController', function() {
 
-	table_instr = $('#table_instr');
-	table_adder = $('#table_adder');
-	table_mult = $('#table_mult');
-	table_reg = $('#table_reg');
-
 	this.nInstruction = 1;
 
     this.defaultInst = {
@@ -31,58 +26,26 @@ app.controller('InstController', function() {
     this.instructionsCycles = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
     this.registers_bank = [
-    {name: 'r0', value: '0'},
-    {name: 'r2', value: '0'},
-    {name: 'r4', value: '0'},
-    {name: 'r6', value: '0'},
-    {name: 'r8', value: '0'}];
+    {name: 'r0'},
+    {name: 'r2'},
+    {name: 'r4'},
+    {name: 'r6'},
+    {name: 'r8'}];
 
     this.instr_run = [];
+    this.adder = [];
+    this.mult = [];
 
     this.setRegTable = function() {
     	var defaultReg = [];
-    	defaultReg.push({number:'0', busy:'', tag:'', data:''}); // pos 0
-    	defaultReg.push({number:'2', busy:'', tag:'', data:''}); // pos 1
-    	defaultReg.push({number:'4', busy:'', tag:'', data:''}); // pos 2
-    	defaultReg.push({number:'6', busy:'', tag:'', data:''}); // pos 3
-    	defaultReg.push({number:'8', busy:'', tag:'', data:''}); // pos 4
+    	defaultReg.push({number:'r0', busy:0, tag:0, data:0}); // pos 0
+    	defaultReg.push({number:'r2', busy:0, tag:0, data:4}); // pos 1
+    	defaultReg.push({number:'r4', busy:0, tag:0, data:8}); // pos 2
+    	defaultReg.push({number:'r6', busy:0, tag:0, data:12}); // pos 3
+    	defaultReg.push({number:'r8', busy:0, tag:0, data:16}); // pos 4
     	return defaultReg;
     };
-    this.table_reg = this.setRegTable();
-
-
-    this.addToAdder = function(instr) {
-    	var instructionToAdd = instr;
-
-        // si es raw la funcion le devuelve el valor del tag, segun la dependencia, para el op1
-        var tag = isRAW(instructionToAdd,1);
-        instructionToAdd['tag1'] = tag;
-
-        // si es raw la funcion le devuelve el valor del tag, segun la dependencia, para el op2
-        tag = isRAW(instructionToAdd,2);
-        instructionToAdd['tag2'] = tag;
-
-        // lo debería agregar en el primer slot disponible
-    	this.table_adder.push(instructionToAdd);
-    };
-    this.table_adder = [];
-
-
-	this.addToMul = function(instr) {
-    	var instructionToMul = instr;
-
-        // si es raw la funcion le devuelve el valor del tag, segun la dependencia, para el op1
-        var tag = isRAW(instructionToMul,1);
-        instructionToMul['tag1'] = tag;
-
-        // si es raw la funcion le devuelve el valor del tag, segun la dependencia, para el op2
-        tag = isRAW(instructionToMul,2);
-        instructionToMul['tag2'] = tag;
-
-        // REEMPLAZAR: lo debería agregar en el primer slot disponible
-        this.table_mult.push(instructionToMul);
-    };
-    this.table_mult = [];
+    this.reg = this.setRegTable();
 
 
     this.select = function(field, instruction) {
@@ -157,7 +120,7 @@ app.controller('InstController', function() {
     };
 
     this.putInstInTable = function() {
-    	this.selectedInst['number'] = 'S'+ this.nInstruction;
+    	this.selectedInst['id'] = 'S'+ this.nInstruction;
     	this.instr_run.push(this.selectedInst);
     	this.nInstruction++;
     	this.selectedInst = jQuery.extend(true, {}, this.defaultInst);
@@ -197,23 +160,90 @@ app.controller('InstController', function() {
             $('#btn-run').addClass("disabled");
 
             this.instr_run = [];
-            this.table_reg = this.setRegTable();
+            this.reg = this.setRegTable();
             this.resetInstCycles();
+            this.adder = [];
+            this.mult = [];
+            this.nInstruction = 1;
     };
 
+
+
+
+/**********************************************************************************************/
+
+    this.isRaw = function(reg,pos) {
+
+        var reg = reg.substring(1, reg.length);
+
+        // fix reg number by position
+        if (reg>0) {
+            reg = reg/2;
+        }
+
+        if (this.reg[reg].busy == 0) {
+            return {busy:0, data:this.reg[reg].data};
+        } else {
+            return {busy:1, tag:this.reg[reg].tag};
+        }
+
+        return reg;
+    };
+
+    this.updateRegTag = function(instr, pos) {
+        var dst = instr['dst'];
+
+        $.each(this.reg, function() {
+            if (this.number == dst) {
+                this.busy = 1;
+                this.tag = pos;
+            }
+        });
+
+    };
+
+
+    this.addToER = function(instr,ER) {
+
+        // ER del multp de 0-4
+        var pos = this.adder.length;
+
+        for (i=1;i<=2;i++) {
+           var raw = this.isRaw(instr['op'+i],pos);
+            if (raw.busy == 0) {
+                instr['tag'+i] = 0;
+                instr['op'+i] = raw.data;
+            } else {
+                instr['tag'+i] = raw.tag;
+                instr['op1'+i] = '-'
+            } 
+        }
+
+        instr['pos'] = pos;
+
+        // lo debería agregar en el primer slot disponible
+        ER.push(instr);
+
+        // actualizar banco de reg
+        this.updateRegTag(inst, pos);
+
+
+    };
 
     // agrego la instruccion a la ER correspondiente
     this.dispatch = function(inst) {
 
         switch(inst.type) {
             case 'ADD':
-                this.addToAdder(inst);
+                this.addToER(inst,this.adder);
                 break;
             case 'SUBD':
-                this.addToAdder(inst);
+                this.addToER(inst,this.mult);
                 break;
             case 'MULD':
-                this.addToMul(inst);
+                var pos = this.addToMul(inst);
+                // actualizar banco de reg
+                this.updateRegTag(inst, pos);
                 break;
             case 'DIV':
                 this.addToMul(inst);
@@ -231,22 +261,22 @@ app.controller('InstController', function() {
 
     this.execute = function(time) {
 
-        if (!raw(this.table_adder)) {
+        /*if (!raw(this.adder)) {
 
         }
 
-        if (!raw(this.table_mult)) {
+        if (!raw(this.mult)) {
 
         }
 
         // guardo el tiempo en que se empezó a ejecutar
-        instructionToAdd['time'] = time;
+        instructionToAdd['time'] = time;*/
 
     };
 
     // Da TRUE siempre que haya algo para ejecutar o despachar.
     this.keepRunning = function() {
-        return ((this.instr_run.length != 0) || (this.table_adder.length != 0) || (this.table_mult.length != 0))
+        return ((this.instr_run.length != 0) || (this.adder.length != 0) || (this.mult.length != 0))
     };
 
 
@@ -266,10 +296,9 @@ app.controller('InstController', function() {
             this.dispatch(inst);
         }
 
-            
 
         // ejecuto lo que haya por ejecutar
-        this.execute(time);
+        this.execute(this.time);
             
             
     };
