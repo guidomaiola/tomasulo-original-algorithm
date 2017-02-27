@@ -147,7 +147,7 @@
 	    </div>
 
 	    <div class="row">
-	    	<div class="adder-table col-md-3 col-md-offset-1">
+	    	<div class="adder-table col-md-3">
 	    		<h3>Adder</h3>
 	    	    <table class="table table-bordered table-striped">
 	    	        <thead>
@@ -157,7 +157,7 @@
 	    	                <th>Tag</th>
 	    	                <th>Op1</th>
 	    	                <th>Tag</th>
-	    	                <th>Op 2</th>
+	    	                <th>Op2</th>
 	    	                <th>Dst</th>
 	    	            </tr>
 	    	        </thead>
@@ -185,7 +185,7 @@
 	    	                <th>Tag</th>
 	    	                <th>Op1</th>
 	    	                <th>Tag</th>
-	    	                <th>Op 2</th>
+	    	                <th>Op2</th>
 	    	                <th>Dst</th>
 	    	            </tr>
 	    	        </thead>
@@ -202,6 +202,31 @@
 	    	        </tbody>
 	    	    </table>
 	    	</div>
+
+	    	<div class="mult-table col-md-2">
+	    		<h3>MEM</h3>
+	    	    <table class="table table-bordered table-striped">
+	    	        <thead>
+	    	            <tr>
+	    	            	<th>#</th>
+	    	            	<th>Ins</th>
+	    	                <th>Tag</th>
+	    	                <th>Op1</th>
+	    	                <th>Dst</th>
+	    	            </tr>
+	    	        </thead>
+	    	        <tbody>
+	    	            <tr ng-repeat="i in ctrl.mult">
+		                    <td>{{i.pos}}</td>
+		                    <td>{{i.id}}</td>
+		                    <td>{{i.tag1}}</td>
+		                    <td>{{i.op1}}</td>
+		                    <td>{{i.dst}}</td>
+		                </tr>
+	    	        </tbody>
+	    	    </table>
+	    	</div>
+
 	    	<div class="reg-table col-md-3 col-md-offset-1">
 	    		<h3>Register Bank</h3>
 	    	    <table class="table table-bordered table-striped">

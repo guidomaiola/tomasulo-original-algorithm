@@ -1,6 +1,7 @@
 
 var app = angular.module('tomasuloApp', []);
 
+
 app.controller('InstController', function() {
 
 	this.nInstruction = 1;
@@ -36,9 +37,10 @@ app.controller('InstController', function() {
     this.adder = [];
     this.mult = [];
 
+
     this.setRegTable = function() {
     	var defaultReg = [];
-    	defaultReg.push({number:'r0', busy:0, tag:0, data:0}); // pos 0
+    	defaultReg.push({number:'r0', busy:0, tag:0, data:2}); // pos 0
     	defaultReg.push({number:'r2', busy:0, tag:0, data:4}); // pos 1
     	defaultReg.push({number:'r4', busy:0, tag:0, data:8}); // pos 2
     	defaultReg.push({number:'r6', busy:0, tag:0, data:12}); // pos 3
@@ -157,7 +159,6 @@ app.controller('InstController', function() {
     this.reset = function() {
             $('.btn-grp-add-inst').find("button").removeClass("disabled");
             $('.cicle-per-instructions').find("button").removeClass("disabled");
-            $('#btn-run').addClass("disabled");
 
             this.instr_run = [];
             this.reg = this.setRegTable();
@@ -203,20 +204,24 @@ app.controller('InstController', function() {
     };
 
 
-    this.addToER = function(instr,ER) {
+    this.addToER = function(instr,ER, offset) {
 
-        // ER del multp de 0-4
-        var pos = this.adder.length;
+        // ER del adder de 0-4, del mult 5-9
+        var pos = ER.length + offset;
 
-        for (i=1;i<=2;i++) {
+        // 1 op si es MEM, sino 2 op
+        var cantOperandos = 2;
+        for (i=1;i<=cantOperandos;i++) {
+
+            // 
            var raw = this.isRaw(instr['op'+i],pos);
             if (raw.busy == 0) {
                 instr['tag'+i] = 0;
                 instr['op'+i] = raw.data;
             } else {
                 instr['tag'+i] = raw.tag;
-                instr['op1'+i] = '-'
-            } 
+                instr['op'+i] = '-'
+            }
         }
 
         instr['pos'] = pos;
@@ -225,7 +230,7 @@ app.controller('InstController', function() {
         ER.push(instr);
 
         // actualizar banco de reg
-        this.updateRegTag(inst, pos);
+        this.updateRegTag(instr, pos);
 
 
     };
@@ -235,18 +240,16 @@ app.controller('InstController', function() {
 
         switch(inst.type) {
             case 'ADD':
-                this.addToER(inst,this.adder);
+                this.addToER(inst,this.adder,1);
                 break;
             case 'SUBD':
-                this.addToER(inst,this.mult);
+                this.addToER(inst,this.adder,1);
                 break;
             case 'MULD':
-                var pos = this.addToMul(inst);
-                // actualizar banco de reg
-                this.updateRegTag(inst, pos);
+                this.addToER(inst,this.mult,6);
                 break;
             case 'DIV':
-                this.addToMul(inst);
+                this.addToER(inst,this.mult,6);
                 break;
             case 'ST':
                 /**code block*/
@@ -258,27 +261,48 @@ app.controller('InstController', function() {
 
     };
 
+/**********************************************************************************************/
+
+    
+    this.updateERs = function() {};
+
+    this.updateRegVals = function() {};
+
+
+    this.blocked = function() {
+
+    };
+
+
+    this.blocked = function() {
+
+    };
+
+
+    this.exe = function(ER) {
+
+    };
 
     this.execute = function(time) {
 
-        /*if (!raw(this.adder)) {
+        
+        var instr = getFirst(this.adder);
 
+        if (!this.blocked(instr)) {
+            this.exe(instr);
         }
 
-        if (!raw(this.mult)) {
 
-        }
 
-        // guardo el tiempo en que se empezó a ejecutar
-        instructionToAdd['time'] = time;*/
-
+        
     };
+
+
 
     // Da TRUE siempre que haya algo para ejecutar o despachar.
     this.keepRunning = function() {
         return ((this.instr_run.length != 0) || (this.adder.length != 0) || (this.mult.length != 0))
     };
-
 
     this.time = 0;
 
@@ -286,19 +310,26 @@ app.controller('InstController', function() {
 
         this.time= this.time + 1;
 
-        // si la lista de instrucciones no esta vacia, despacho.
-        if (this.instr_run.length > 0 ) {
+        // ITERO POR EL N DE EMISION DE INSTR
+        var EMISION = 1;
+        for (i=1;i<=EMISION;i++) {
 
-            // tomo la primer instruccion de la lista
-            var inst = this.instr_run.shift();
-        
-            // la despacho a la ER correspondiente
-            this.dispatch(inst);
+            // si la lista de instrucciones no esta vacia, despacho.
+            if (this.instr_run.length > 0 ) {
+                // tomo la primer instruccion de la lista
+                var inst = this.instr_run.shift();
+                // despacho a la ER correspondiente
+                this.dispatch(inst);
+            }
         }
-
 
         // ejecuto lo que haya por ejecutar
         this.execute(this.time);
+
+        this.updateRegVals();
+
+
+        this.updateERs();
             
             
     };
