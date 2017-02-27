@@ -6,6 +6,7 @@ app.controller('InstController', function() {
 
 	this.nInstruction = 1;
 
+
     this.defaultInst = {
         type:'INSTRUCTION',
         dst: 'DST',
@@ -269,28 +270,79 @@ app.controller('InstController', function() {
     this.updateRegVals = function() {};
 
 
-    this.blocked = function() {
-
+    this.getFirstFree = function(ER) {
+        for (i=0; i<ER.length;i++) {
+            if (ER[i].tag1 == 0) {
+                if (ER[i].tag2 == 0) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     };
 
 
-    this.blocked = function() {
+    this.exe = function(ins) {
 
+        var result = 0;
+
+            switch(ins.type) {
+            case 'ADD':
+                result = ins.op1 + ins.op2;
+                break;
+            case 'SUBD':
+                result = ins.op1 - ins.op2;
+                break;
+            case 'MULD':
+                result = ins.op1 * ins.op2;
+                break;
+            case 'DIV':
+                result = ins.op1 / ins.op2;
+                break;
+            case 'ST':
+                /**code block*/
+                break;
+            case 'LD':
+                /**code block*/
+                break;
+        return result;
     };
 
 
-    this.exe = function(ER) {
-
+    this.saveResult = function(ins,result) {
+        // GUARDAR RESULTADO
     };
 
+    // ejecuta de a una por ER
     this.execute = function(time) {
 
-        
-        var instr = getFirst(this.adder);
+        var instr = this.getFirstFree(this.adder);
+        var result = 0;
 
-        if (!this.blocked(instr)) {
-            this.exe(instr);
+        if (instr > -1) {
+            
+            var ins = this.adder[instr];
+            
+            // SUMAR Y CALCULAR TIEMPO
+            ins['EXE'] = ins['EXE'] + 1;
+
+            // SI CUMPLIO LOS CICLOS LLAMAR A EXE this.exe()
+            if (ins['EXE'] == TIEMPO_ADDER ) {
+                result = this.exe(ins);
+                // GUARDAR RESULTADO this.saveResult()
+            }
+
+            
+
+
         }
+
+        return {ins,result};
+
+
+        }
+
+
 
 
 
@@ -324,7 +376,7 @@ app.controller('InstController', function() {
         }
 
         // ejecuto lo que haya por ejecutar
-        this.execute(this.time);
+        var result = this.execute(this.time);
 
         this.updateRegVals();
 
