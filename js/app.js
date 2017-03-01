@@ -4,8 +4,6 @@ var app = angular.module('tomasuloApp', []);
 
 app.controller('InstController', function() {
 
-	this.nInstruction = 1;
-
 
     this.defaultInst = {
         type:'INSTRUCTION',
@@ -34,18 +32,24 @@ app.controller('InstController', function() {
     {name: 'r6'},
     {name: 'r8'}];
 
-    this.instr_run = [];
+    this.instr_run = [
+        {id:'S1', op1:'r0', op2:'r2', type:'ADD', dst:'r8'},
+        {id:'S2', op1:'r8', op2:'r2', type:'MULD', dst:'r4'},
+        {id:'S3', op1:'r2', op2:'r8', type:'SUBD', dst:'r0'}];
+
+    this.nInstruction = this.instr_run.length+1;
+
     this.adder = [];
     this.mult = [];
-
+    this.executed = [];
 
     this.setRegTable = function() {
     	var defaultReg = [];
-    	defaultReg.push({number:'r0', busy:0, tag:0, data:2}); // pos 0
-    	defaultReg.push({number:'r2', busy:0, tag:0, data:4}); // pos 1
-    	defaultReg.push({number:'r4', busy:0, tag:0, data:8}); // pos 2
-    	defaultReg.push({number:'r6', busy:0, tag:0, data:12}); // pos 3
-    	defaultReg.push({number:'r8', busy:0, tag:0, data:16}); // pos 4
+    	defaultReg.push({number:'r0', busy:0, tag:0, data:9.5}); // pos 0
+    	defaultReg.push({number:'r2', busy:0, tag:0, data:3.2}); // pos 1
+    	defaultReg.push({number:'r4', busy:0, tag:0, data:19}); // pos 2
+    	defaultReg.push({number:'r6', busy:0, tag:0, data:0}); // pos 3
+    	defaultReg.push({number:'r8', busy:0, tag:0, data:5.4}); // pos 4
     	return defaultReg;
     };
     this.reg = this.setRegTable();
@@ -174,7 +178,7 @@ app.controller('InstController', function() {
 
 /**********************************************************************************************/
 
-    this.isRaw = function(reg,pos) {
+    this.isBusy = function(reg) {
 
         var reg = reg.substring(1, reg.length);
 
@@ -189,7 +193,6 @@ app.controller('InstController', function() {
             return {busy:1, tag:this.reg[reg].tag};
         }
 
-        return reg;
     };
 
     this.updateRegTag = function(instr, pos) {
@@ -204,31 +207,44 @@ app.controller('InstController', function() {
 
     };
 
+    // Obtiene la primer posicion vacia del ER
+    this.getPos = function(ER) {
+        var pos = 0;
+        for (i=0;i<=ER.lenght;i++) {
+            if (ER[i].dst == '') {
+                pos = i;
+            }
+        };
+        return pos;
+    };
 
     this.addToER = function(instr,ER, offset) {
 
         // ER del adder de 0-4, del mult 5-9
-        var pos = ER.length + offset;
+        var index = this.getPos(ER);
+        var pos = index + offset;
+
 
         // 1 op si es MEM, sino 2 op
         var cantOperandos = 2;
         for (i=1;i<=cantOperandos;i++) {
 
             // 
-           var raw = this.isRaw(instr['op'+i],pos);
+           var raw = this.isBusy(instr['op'+i]);
             if (raw.busy == 0) {
                 instr['tag'+i] = 0;
-                instr['op'+i] = raw.data;
+                instr['op'+i+'data'] = raw.data;
             } else {
                 instr['tag'+i] = raw.tag;
-                instr['op'+i] = '-'
+                instr['op'+i+'data'] = '-'
             }
         }
 
         instr['pos'] = pos;
+        instr['EXE'] = 0;
 
         // lo debería agregar en el primer slot disponible
-        ER.push(instr);
+        ER[index] = instr;
 
         // actualizar banco de reg
         this.updateRegTag(instr, pos);
@@ -264,12 +280,67 @@ app.controller('InstController', function() {
 
 /**********************************************************************************************/
 
-    
-    this.updateERs = function() {};
+    // Escribe el resultado de la instruccion en las tag que la esperan en el ER
+    this.updateER = function(ER,tag,result) {
+        $.each(ER,function () {
+                if (this.tag1 == tag) {
+                    console.log("Actualizando el ER. Entrada: "+this.pos);
+                    this.op1data = result;
+                }
+                if (this.tag1 == tag) {
+                    console.log("Actualizando el ER. Entrada: "+this.pos);
+                    this.op1data = result;
+                }
+            
+        });
 
-    this.updateRegVals = function() {};
+
+    };
+
+    // Escribe el resultado de la instruccion en las tag que la esperan en el banco de registros
+    this.updateRegVals = function(tag,result) {
+        $.each(this.reg,function () {
+            if (this.busy == 1) {
+                if (this.tag == tag) {
+                    console.log("Actualizando el banco de registros. Entrada: "+this.number);
+                    this.busy = 0;
+                    this.tag = 0;
+                    this.data = result;
+                }
+            }
+        });
+
+    };
 
 
+    this.finalize = function(ins) {
+
+        var result = 0;
+
+            switch(ins.type) {
+            case 'ADD':
+                result = ins.op1data + ins.op2data;
+                break;
+            case 'SUBD':
+                result = ins.op1data - ins.op2data;
+                break;
+            case 'MULD':
+                result = ins.op1data * ins.op2data;
+                break;
+            case 'DIV':
+                result = ins.op1data / ins.op2data;
+                break;
+            case 'ST':
+                /**code block*/
+                break;
+            case 'LD':
+                /**code block*/
+                break;
+            }
+        return result;
+    };
+
+    // devuelve la primer instruccion libre
     this.getFirstFree = function(ER) {
         for (i=0; i<ER.length;i++) {
             if (ER[i].tag1 == 0) {
@@ -281,72 +352,66 @@ app.controller('InstController', function() {
         return -1;
     };
 
-
-    this.exe = function(ins) {
-
-        var result = 0;
-
-            switch(ins.type) {
-            case 'ADD':
-                result = ins.op1 + ins.op2;
-                break;
-            case 'SUBD':
-                result = ins.op1 - ins.op2;
-                break;
-            case 'MULD':
-                result = ins.op1 * ins.op2;
-                break;
-            case 'DIV':
-                result = ins.op1 / ins.op2;
-                break;
-            case 'ST':
-                /**code block*/
-                break;
-            case 'LD':
-                /**code block*/
-                break;
-        return result;
-    };
-
-
-    this.saveResult = function(ins,result) {
-        // GUARDAR RESULTADO
+    // Obtiene la cantidad de ciclos de ejecucion por tipo de instruccion, segun lo configurado
+    this.getTEX = function(op) {
+        var time = 1;
+        $.each(this.instructions, function() {
+            if (this.type == op) {
+                time = this.cycles;
+            }
+        });
+        return time;
     };
 
     // ejecuta de a una por ER
-    this.execute = function(time) {
-
-        var instr = this.getFirstFree(this.adder);
-        var result = 0;
-
-        if (instr > -1) {
-            
-            var ins = this.adder[instr];
-            
-            // SUMAR Y CALCULAR TIEMPO
-            ins['EXE'] = ins['EXE'] + 1;
-
-            // SI CUMPLIO LOS CICLOS LLAMAR A EXE this.exe()
-            if (ins['EXE'] == TIEMPO_ADDER ) {
-                result = this.exe(ins);
-                // GUARDAR RESULTADO this.saveResult()
-            }
-
-            
-
-
-        }
-
-        return {ins,result};
-
-
-        }
-
-
-
-
+    this.execute = function(ER,op) {
 
         
+        var instrPos = this.getFirstFree(ER);
+        var TEX = this.getTEX(op);
+        var result = 0;
+
+        if (instrPos > -1) {
+
+            var inst = ER[instrPos];
+
+            // EXECUTE
+            inst['EXE'] = inst['EXE'] + 1;
+            console.log("Executing " + inst.id +". Type: " + inst.type);
+
+            // Si finalizó la ejecucion en este ciclo, elimino la instr del ER
+            if (inst['EXE'] == TEX ) {
+
+                result = this.finalize(inst);
+
+                // remove the finalized instr from the ER. Add into the 'executed' array
+                ER[instrPos].pos = '';
+                ER[instrPos].id = '';
+                ER[instrPos].tag1 = '';
+                ER[instrPos].op1data = '';
+                ER[instrPos].op1 = '';
+                ER[instrPos].tag2 = '';
+                ER[instrPos].op2data = '';
+                ER[instrPos].op2 = '';
+                ER[instrPos].dst = '';
+                ER[instrPos].type = '';
+
+
+                this.executed.push(inst);
+
+                var tag = instrPos + 1;
+                // update ER with result for any tag entry
+                this.updateER(ER,tag,result);
+
+                this.updateRegVals(tag,result);
+
+            }
+
+
+        }
+
+        //return {ins,result};
+
     };
 
 
@@ -356,11 +421,9 @@ app.controller('InstController', function() {
         return ((this.instr_run.length != 0) || (this.adder.length != 0) || (this.mult.length != 0))
     };
 
-    this.time = 0;
 
     this.run = function() {
 
-        this.time= this.time + 1;
 
         // ITERO POR EL N DE EMISION DE INSTR
         var EMISION = 1;
@@ -375,13 +438,11 @@ app.controller('InstController', function() {
             }
         }
 
-        // ejecuto lo que haya por ejecutar
-        var result = this.execute(this.time);
+        // ejecuto
+        this.execute(this.adder,'ADD');
+        this.execute(this.mult,'MULD');
 
-        this.updateRegVals();
 
-
-        this.updateERs();
             
             
     };
