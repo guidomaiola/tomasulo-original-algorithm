@@ -130,19 +130,27 @@
 		    	    </ul>
 		    	  </div>
 		    	</div>
+
+		    	<div class="control-buttons">
+				<h3>Set / Reset options:</h3>
+					<button type="button" class="btn btn-default" id="btn-set" ng-click="ctrl.set()">Set</button>
+		    		<button type="button" class="btn btn-default" id="btn-reset" ng-click="ctrl.reset()">Reset</button>
+		    </div>
 		        
 		    </div>
 	    </div>
 
 	    <div class="row">
-		    <div class="control-buttons col-md-9 col-md-offset-1">
-				<h3>Set / Reset options:</h3>
-					<button type="button" class="btn btn-default" id="btn-set" ng-click="ctrl.set()">Set</button>
-		    		<button type="button" class="btn btn-default" id="btn-reset" ng-click="ctrl.reset()">Reset</button>
-
+		    
+		    <div class="control-buttons col-md-3 col-md-offset-1">
 		    	<h3>Start execution:</h3>
 			    	<button type="button" class="btn btn-default disabled" id="btn-run" ng-click="ctrl.run()" ng-disabled="!ctrl.keepRunning()">RUN CYCLE</button>
 
+		    </div>
+		    <div class="time-counter col-md-3 col-md-offset-1">
+		    	<h3>Time counter: 
+		    		<span class="label label-default">{{ctrl.exTime}}</span>
+		    	</h3>
 		    </div>
 	    </div>
 
@@ -248,7 +256,9 @@
 	    	        </tbody>
 	    	    </table>
 	    	</div>
+
     	</div>
+
     </div>
 
     <script src="./js/jquery.min.js"></script>

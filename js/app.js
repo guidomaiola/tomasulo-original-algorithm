@@ -4,6 +4,7 @@ var app = angular.module('tomasuloApp', []);
 
 app.controller('InstController', function() {
 
+    this.exTime = 0;
 
     this.defaultInst = {
         type:'INSTRUCTION',
@@ -292,10 +293,12 @@ app.controller('InstController', function() {
                 if (this.tag1 == tag) {
                     console.log("Actualizando el ER. Entrada: "+this.pos);
                     this.op1data = result;
+                    this.tag1 = 0;
                 }
                 if (this.tag2 == tag) {
                     console.log("Actualizando el ER. Entrada: "+this.pos);
                     this.op2data = result;
+                    this.tag2 = 0;
                 }
             
         });
@@ -382,6 +385,7 @@ app.controller('InstController', function() {
         ER[pos].op2 = '';
         ER[pos].dst = '';
         ER[pos].type = '';
+        ER[pos].EXTIME = "";
     };
 
     // ejecuta de a una por ER
@@ -396,15 +400,20 @@ app.controller('InstController', function() {
 
             var inst = ER[instrPos];
 
-            // EXECUTE
+            // EXECUTE AND ADD CYCLES
             inst['EXE'] = inst['EXE'] + 1;
             console.log("Executing " + inst.id +". Type: " + inst.type);
 
-            // Si finalizó la ejecucion en este ciclo, elimino la instr del ER
+            // SAVE THE STARTING EXECUTION TIME 
+            if (inst['EXTIME'] === "") {
+                inst['EXTIME']= this.exTime;
+            }
+
+
+            // Si finalizó la ejecucion en este ciclo, elimino la instr del ER y guardo el resultado
             if (inst['EXE'] == TEX ) {
 
                 result = this.finalize(inst);
-
 
                 // guardo una copia
                 inst = jQuery.extend(true, {}, ER[instrPos]);
@@ -413,9 +422,10 @@ app.controller('InstController', function() {
 
                 this.executed.push(inst);
 
-                var tag = instrPos + 1;
+                var tag = inst.pos;
                 // update ER with result for any tag entry
-                this.updateER(ER,tag,result);
+                this.updateER(this.adder,tag,result);
+                this.updateER(this.mult,tag,result);
 
                 this.updateRegVals(tag,result);
 
@@ -432,12 +442,32 @@ app.controller('InstController', function() {
 
     // Da TRUE siempre que haya algo para ejecutar o despachar.
     this.keepRunning = function() {
-        return ((this.instr_run.length != 0) || (this.adder.length != 0) || (this.mult.length != 0))
+        var keep = false;
+        if (this.instr_run.length != 0) {
+            keep = true;
+        }
+
+        if (this.adder.length != 0) { // SI ER ADDER NO ESTA VACIO
+            $.each(this.adder, function() {
+                if (this.dst!=="") {
+                    keep = true;
+                }
+            });
+        } 
+        if (this.mult.length != 0) { // SI ER MULT NO ESTA VACIO
+            $.each(this.adder, function() {
+                if (this.dst!=="") {
+                    keep = true;
+                }
+            });
+        }
+        return keep;
     };
 
 
     this.run = function() {
 
+        this.exTime = this.exTime + 1;
 
         // ITERO POR EL N DE EMISION DE INSTR
         var EMISION = 1;
@@ -448,6 +478,7 @@ app.controller('InstController', function() {
                 // tomo la primer instruccion de la lista
                 var inst = this.instr_run.shift();
                 // despacho a la ER correspondiente
+                inst['EXTIME']="";
                 this.dispatch(inst);
             }
         }
@@ -455,8 +486,6 @@ app.controller('InstController', function() {
         // ejecuto
         this.execute(this.adder,'ADD');
         this.execute(this.mult,'MULD');
-
-
             
             
     };
