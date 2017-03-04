@@ -207,17 +207,23 @@ app.controller('InstController', function() {
 
     };
 
+
     // Obtiene la primer posicion vacia del ER
     this.getPos = function(ER) {
         var pos = 0;
-        for (i=0;i<=ER.lenght;i++) {
-            if (ER[i].dst == '') {
-                pos = i;
+        if (ER.length > 0) {
+            for (i=0;i<=ER.length;i++) {    
+                if (ER[i].dst == "") {
+                    return i;
+                }
             }
-        };
+        }
         return pos;
     };
 
+
+
+//VER POSICIONES
     this.addToER = function(instr,ER, offset) {
 
         // ER del adder de 0-4, del mult 5-9
@@ -287,9 +293,9 @@ app.controller('InstController', function() {
                     console.log("Actualizando el ER. Entrada: "+this.pos);
                     this.op1data = result;
                 }
-                if (this.tag1 == tag) {
+                if (this.tag2 == tag) {
                     console.log("Actualizando el ER. Entrada: "+this.pos);
-                    this.op1data = result;
+                    this.op2data = result;
                 }
             
         });
@@ -302,7 +308,7 @@ app.controller('InstController', function() {
         $.each(this.reg,function () {
             if (this.busy == 1) {
                 if (this.tag == tag) {
-                    console.log("Actualizando el banco de registros. Entrada: "+this.number);
+                    console.log("Actualizando el banco de registros. Entrada: "+this.number+". Result: "+result);
                     this.busy = 0;
                     this.tag = 0;
                     this.data = result;
@@ -363,6 +369,21 @@ app.controller('InstController', function() {
         return time;
     };
 
+    this.removeExecuted = function(ER,pos) {
+        console.log("Removing "+ER[pos].id+" from pos "+ER[pos].pos);
+        ER[pos].EXE = 0;
+        ER[pos].pos = '';
+        ER[pos].id = '';
+        ER[pos].tag1 = '';
+        ER[pos].op1data = '';
+        ER[pos].op1 = '';
+        ER[pos].tag2 = '';
+        ER[pos].op2data = '';
+        ER[pos].op2 = '';
+        ER[pos].dst = '';
+        ER[pos].type = '';
+    };
+
     // ejecuta de a una por ER
     this.execute = function(ER,op) {
 
@@ -384,18 +405,11 @@ app.controller('InstController', function() {
 
                 result = this.finalize(inst);
 
-                // remove the finalized instr from the ER. Add into the 'executed' array
-                ER[instrPos].pos = '';
-                ER[instrPos].id = '';
-                ER[instrPos].tag1 = '';
-                ER[instrPos].op1data = '';
-                ER[instrPos].op1 = '';
-                ER[instrPos].tag2 = '';
-                ER[instrPos].op2data = '';
-                ER[instrPos].op2 = '';
-                ER[instrPos].dst = '';
-                ER[instrPos].type = '';
 
+                // guardo una copia
+                inst = jQuery.extend(true, {}, ER[instrPos]);
+                // remove the finalized instr from the ER. Add into the 'executed' array
+                this.removeExecuted(ER,instrPos);
 
                 this.executed.push(inst);
 
