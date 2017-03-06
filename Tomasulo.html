@@ -80,6 +80,11 @@
    	       					<li ng-repeat="reg in ctrl.registers_bank"><a ng-click="ctrl.select('op2', reg.name)">{{reg.name}}</a></li>
    	       				</ul>
    	       	       	</div>
+
+   	       	       	<!--div class="btn-group">
+   	       				<input class="form-control" id="mem_data" type="text">
+   	       	       	</div-->
+
    	       	       	<button id="btn-add" type="button" class="btn btn-default disabled" ng-click="ctrl.putInstInTable()">Add instruction</button>
 		        </div>
 		    </div>
@@ -131,13 +136,32 @@
 		    	  </div>
 		    	</div>
 
+		    	<div class="cicle-per-instructions">
+			    	<h4>Set the emission number:</h4>
+
+			    	<div class="btn-group" role="group" aria-label="...">
+			    	  <button type="button" class="btn btn-default">EMISSION #</button>
+
+			    	  <div class="btn-group" role="group">
+			    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			    	      {{ctrl.emission}}
+			    	      <span class="caret"></span>
+			    	    </button>
+			    	    <ul class="dropdown-menu">
+			    	    	<li ng-repeat="e in [1,2,3,4]"><a ng-click="ctrl.selectemission(e)">{{e}}</a></li>
+			    	    </ul>
+			    	  </div>
+			    	</div>
+		    	</div>
+
 		    	<div class="control-buttons">
-				<h3>Set / Reset options:</h3>
+					<h4>Set / Reset options:</h4>
 					<button type="button" class="btn btn-default" id="btn-set" ng-click="ctrl.set()">Set</button>
 		    		<button type="button" class="btn btn-default" id="btn-reset" ng-click="ctrl.reset()">Reset</button>
-		    </div>
+		    	</div>
 		        
 		    </div>
+		    
 	    </div>
 
 	    <div class="row">
@@ -224,7 +248,7 @@
 	    	            </tr>
 	    	        </thead>
 	    	        <tbody>
-	    	            <tr ng-repeat="i in ctrl.mult">
+	    	            <tr ng-repeat="i in ctrl.mem">
 		                    <td>{{i.pos}}</td>
 		                    <td>{{i.id}}</td>
 		                    <td>{{i.tag1}}</td>
@@ -257,6 +281,14 @@
 	    	    </table>
 	    	</div>
 
+    	</div>
+
+    	<div class="row">
+    		<div class="col-md-8 col-md-offset-2">
+    			<blackquote>
+    				<p ng-repeat="p in ctrl.logs">{{p}}</p>
+    			</blackquote>
+    		</div>
     	</div>
 
     </div>

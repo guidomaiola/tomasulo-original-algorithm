@@ -42,7 +42,11 @@ app.controller('InstController', function() {
 
     this.adder = [];
     this.mult = [];
+    this.mem = [];
     this.executed = [];
+    this.logs = [];
+
+    this.emission = 1;
 
     this.setRegTable = function() {
     	var defaultReg = [];
@@ -69,6 +73,10 @@ app.controller('InstController', function() {
         	}
     	});
 	};
+
+    this.selectemission = function(em) {
+        this.emission = em;
+    };
 
 	this.resetInstCycles = function() {
 		var instArray = this.instructions;
@@ -172,6 +180,7 @@ app.controller('InstController', function() {
             this.adder = [];
             this.mult = [];
             this.nInstruction = 1;
+            this.logs = [];
     };
 
 
@@ -213,9 +222,9 @@ app.controller('InstController', function() {
     this.getPos = function(ER) {
         var pos = 0;
         if (ER.length > 0) {
-            for (i=0;i<=ER.length;i++) {    
-                if (ER[i].dst == "") {
-                    return i;
+            for (p=0;p<ER.length;p++) {    
+                if (ER[p].dst == "") {
+                    return p;
                 }
             }
         }
@@ -224,7 +233,6 @@ app.controller('InstController', function() {
 
 
 
-//VER POSICIONES
     this.addToER = function(instr,ER, offset) {
 
         // ER del adder de 0-4, del mult 5-9
@@ -264,22 +272,28 @@ app.controller('InstController', function() {
 
         switch(inst.type) {
             case 'ADD':
+                this.logs.push("Despachando "+inst.id+" a la ER del Adder");
                 this.addToER(inst,this.adder,1);
                 break;
             case 'SUBD':
+            this.logs.push("Despachando "+inst.id+" a la ER del Adder");
                 this.addToER(inst,this.adder,1);
                 break;
             case 'MULD':
+                this.logs.push("Despachando "+inst.id+" a la ER del Multiplier");
                 this.addToER(inst,this.mult,6);
                 break;
             case 'DIV':
+                this.logs.push("Despachando "+inst.id+" a la ER del Multiplier");
                 this.addToER(inst,this.mult,6);
                 break;
             case 'ST':
-                /**code block*/
+                this.logs.push("Despachando "+inst.id+" a la ER del Memory");
+                this.addToER(inst,this.mem,11);
                 break;
             case 'LD':
-                /**code block*/
+                this.logs.push("Despachando "+inst.id+" a la ER del Memory");
+                this.addToER(inst,this.mem,11);
                 break;
         }
 
@@ -291,12 +305,10 @@ app.controller('InstController', function() {
     this.updateER = function(ER,tag,result) {
         $.each(ER,function () {
                 if (this.tag1 == tag) {
-                    console.log("Actualizando el ER. Entrada: "+this.pos);
                     this.op1data = result;
                     this.tag1 = 0;
                 }
                 if (this.tag2 == tag) {
-                    console.log("Actualizando el ER. Entrada: "+this.pos);
                     this.op2data = result;
                     this.tag2 = 0;
                 }
@@ -311,7 +323,6 @@ app.controller('InstController', function() {
         $.each(this.reg,function () {
             if (this.busy == 1) {
                 if (this.tag == tag) {
-                    console.log("Actualizando el banco de registros. Entrada: "+this.number+". Result: "+result);
                     this.busy = 0;
                     this.tag = 0;
                     this.data = result;
@@ -373,7 +384,6 @@ app.controller('InstController', function() {
     };
 
     this.removeExecuted = function(ER,pos) {
-        console.log("Removing "+ER[pos].id+" from pos "+ER[pos].pos);
         ER[pos].EXE = 0;
         ER[pos].pos = '';
         ER[pos].id = '';
@@ -402,7 +412,7 @@ app.controller('InstController', function() {
 
             // EXECUTE AND ADD CYCLES
             inst['EXE'] = inst['EXE'] + 1;
-            console.log("Executing " + inst.id +". Type: " + inst.type);
+            this.logs.push(" - Ejecutando "+inst.id+". Ciclo #"+inst['EXE']);
 
             // SAVE THE STARTING EXECUTION TIME 
             if (inst['EXTIME'] === "") {
@@ -418,15 +428,18 @@ app.controller('InstController', function() {
                 // guardo una copia
                 inst = jQuery.extend(true, {}, ER[instrPos]);
                 // remove the finalized instr from the ER. Add into the 'executed' array
+                this.logs.push(" --- Finalizó la inst "+inst.id+", eliminando de la ER.");
                 this.removeExecuted(ER,instrPos);
 
                 this.executed.push(inst);
 
                 var tag = inst.pos;
                 // update ER with result for any tag entry
+                this.logs.push(" --- Actualizando las instrucciones de las ER, para las tags "+tag);
                 this.updateER(this.adder,tag,result);
                 this.updateER(this.mult,tag,result);
 
+                this.logs.push(" --- Actualizando el banco de registros, para las tags "+tag);
                 this.updateRegVals(tag,result);
 
             }
@@ -434,7 +447,6 @@ app.controller('InstController', function() {
 
         }
 
-        //return {ins,result};
 
     };
 
@@ -468,10 +480,10 @@ app.controller('InstController', function() {
     this.run = function() {
 
         this.exTime = this.exTime + 1;
+        this.logs.push("COMIENZO DE CICLO "+this.exTime);
 
         // ITERO POR EL N DE EMISION DE INSTR
-        var EMISION = 1;
-        for (i=1;i<=EMISION;i++) {
+        for (e=1;e<=this.emission;e++) {
 
             // si la lista de instrucciones no esta vacia, despacho.
             if (this.instr_run.length > 0 ) {
