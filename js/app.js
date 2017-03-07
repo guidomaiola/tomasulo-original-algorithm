@@ -362,9 +362,11 @@ app.controller('InstController', function() {
     // devuelve la primer instruccion libre
     this.getFirstFree = function(ER) {
         for (i=0; i<ER.length;i++) {
-            if (ER[i].tag1 == 0) {
-                if (ER[i].tag2 == 0) {
-                    return i;
+            if (ER[i].dst !== "") {
+                if (ER[i].tag1 == 0) {
+                    if (ER[i].tag2 == 0) {
+                        return i;
+                    }
                 }
             }
         }
