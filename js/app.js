@@ -220,15 +220,14 @@ app.controller('InstController', function() {
 
     // Obtiene la primer posicion vacia del ER
     this.getPos = function(ER) {
-        var pos = 0;
         if (ER.length > 0) {
             for (p=0;p<ER.length;p++) {    
-                if (ER[p].dst == "") {
+                if (ER[p].dst === "") {
                     return p;
                 }
             }
         }
-        return pos;
+        return ER.length;
     };
 
 
