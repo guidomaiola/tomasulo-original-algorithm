@@ -95,7 +95,7 @@
 		    	<h4>Set the number of cycles per instruction:</h4>
 
 		    	<div class="btn-group" role="group" aria-label="...">
-		    	  <button type="button" class="btn btn-default">ADD/SUB</button>
+		    	  <button type="button" class="btn btn-default">ADD</button>
 
 		    	  <div class="btn-group" role="group">
 		    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -109,7 +109,21 @@
 		    	</div>
 
 		    	<div class="btn-group" role="group" aria-label="...">
-		    	  <button type="button" class="btn btn-default">MULT/DIV</button>
+		    	  <button type="button" class="btn btn-default">SUBD</button>
+
+		    	  <div class="btn-group" role="group">
+		    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    	      {{ctrl.instructions[1].cycles}}
+		    	      <span class="caret"></span>
+		    	    </button>
+		    	    <ul class="dropdown-menu">
+		    	    	<li ng-repeat="instCycle in ctrl.instructionsCycles"><a ng-click="ctrl.selectCycle('SUBD', instCycle)">{{instCycle}}</a></li>
+		    	    </ul>
+		    	  </div>
+		    	</div>
+
+		    	<div class="btn-group" role="group" aria-label="...">
+		    	  <button type="button" class="btn btn-default">MULD</button>
 
 		    	  <div class="btn-group" role="group">
 		    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -122,8 +136,22 @@
 		    	  </div>
 		    	</div>
 
+		    	<div class="btn-group" role="group" aria-label="...">
+		    	  <button type="button" class="btn btn-default">DIV</button>
+
+		    	  <div class="btn-group" role="group">
+		    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    	      {{ctrl.instructions[3].cycles}}
+		    	      <span class="caret"></span>
+		    	    </button>
+		    	    <ul class="dropdown-menu">
+		    	      	<li ng-repeat="instCycle in ctrl.instructionsCycles"><a ng-click="ctrl.selectCycle('DIV', instCycle)">{{instCycle}}</a></li>
+		    	    </ul>
+		    	  </div>
+		    	</div>
+
 		       	<div class="btn-group" role="group" aria-label="...">
-		    	  <button type="button" class="btn btn-default">ST/LD</button>
+		    	  <button type="button" class="btn btn-default">ST</button>
 
 		    	  <div class="btn-group" role="group">
 		    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -132,6 +160,20 @@
 		    	    </button>
 		    	    <ul class="dropdown-menu">
 		    	      	<li ng-repeat="instCycle in ctrl.instructionsCycles"><a ng-click="ctrl.selectCycle('ST', instCycle)">{{instCycle}}</a></li>
+		    	    </ul>
+		    	  </div>
+		    	</div>
+
+		    	<div class="btn-group" role="group" aria-label="...">
+		    	  <button type="button" class="btn btn-default">LD</button>
+
+		    	  <div class="btn-group" role="group">
+		    	    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    	      {{ctrl.instructions[5].cycles}}
+		    	      <span class="caret"></span>
+		    	    </button>
+		    	    <ul class="dropdown-menu">
+		    	      	<li ng-repeat="instCycle in ctrl.instructionsCycles"><a ng-click="ctrl.selectCycle('LD', instCycle)">{{instCycle}}</a></li>
 		    	    </ul>
 		    	  </div>
 		    	</div>

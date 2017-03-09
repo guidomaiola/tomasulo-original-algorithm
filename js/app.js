@@ -331,6 +331,14 @@ app.controller('InstController', function() {
 
     };
 
+    this.update = function(tag,result){
+        this.logs.push(" --- Actualizando las instrucciones de las ER, para las tags "+tag);
+        this.updateER(this.adder,tag,result);
+        this.updateER(this.mult,tag,result);
+
+        this.logs.push(" --- Actualizando el banco de registros, para las tags "+tag);
+        this.updateRegVals(tag,result);
+    };
 
     this.finalize = function(ins) {
 
@@ -400,16 +408,17 @@ app.controller('InstController', function() {
     };
 
     // ejecuta de a una por ER
-    this.execute = function(ER,op) {
+    this.execute = function(ER) {
 
         
         var instrPos = this.getFirstFree(ER);
-        var TEX = this.getTEX(op);
-        var result = 0;
+        var result = "";
+        var tag = "";
 
         if (instrPos > -1) {
 
             var inst = ER[instrPos];
+            var TEX = this.getTEX(inst['type']);
 
             // EXECUTE AND ADD CYCLES
             inst['EXE'] = inst['EXE'] + 1;
@@ -434,20 +443,13 @@ app.controller('InstController', function() {
 
                 this.executed.push(inst);
 
-                var tag = inst.pos;
-                // update ER with result for any tag entry
-                this.logs.push(" --- Actualizando las instrucciones de las ER, para las tags "+tag);
-                this.updateER(this.adder,tag,result);
-                this.updateER(this.mult,tag,result);
-
-                this.logs.push(" --- Actualizando el banco de registros, para las tags "+tag);
-                this.updateRegVals(tag,result);
+                tag = inst.pos;
 
             }
 
 
         }
-
+        return {tag: tag,result: result};
 
     };
 
@@ -477,7 +479,6 @@ app.controller('InstController', function() {
         return keep;
     };
 
-
     this.run = function() {
 
         this.exTime = this.exTime + 1;
@@ -497,9 +498,16 @@ app.controller('InstController', function() {
         }
 
         // ejecuto
-        this.execute(this.adder,'ADD');
-        this.execute(this.mult,'MULD');
-            
+        var addResult = this.execute(this.adder);
+        var multResult = this.execute(this.mult);
+
+        // Actualizo las estaciones de reservas y el banco de registros, luego de ejecutar.
+        if ((addResult.tag !== "") && (addResult.result !== "")) {
+            this.update(addResult.tag,addResult.result);
+        }
+        if ((multResult.tag !== "") && (multResult.result !== "")) {
+            this.update(multResult.tag,multResult.result);
+        }
             
     };
 
