@@ -1,7 +1,6 @@
 
 var app = angular.module('tomasuloApp', []);
 
-
 app.controller('InstController', function() {
 
     this.exTime = 0;
@@ -47,6 +46,21 @@ app.controller('InstController', function() {
     this.logs = [];
 
     this.emission = 1;
+
+    this.editable = false;
+
+/**********************************************************************************************/
+    this.toggleEditable = function() {
+        if (this.editable == false) {
+            this.editable = true;
+        } else {
+            this.editable = false;
+        }
+    }
+
+    this.isEditable = function() {
+        return (this.editable == true);
+    }
 
     this.setRegTable = function() {
     	var defaultReg = [];

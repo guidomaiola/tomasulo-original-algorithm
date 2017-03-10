@@ -323,7 +323,13 @@
 		                    <td>{{i.number}}</td>
 		                    <td>{{i.busy}}</td>
 		                    <td>{{i.tag}}</td>
-		                    <td>{{i.data}}</td>
+		                    <td>
+		                    	<p ng-click="ctrl.toggleEditable()" ng-show="!ctrl.isEditable()">{{i.data}}</p>
+		                    	<input ng-model="i.data" ng-show="ctrl.isEditable()" type="text">
+		                    	<button ng-show="ctrl.isEditable()" type="button" class="btn btn-default btn-xs" ng-click="ctrl.toggleEditable()">
+									<span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> ok
+								</button>
+		                    </td>
 		                </tr>
 	    	        </tbody>
 	    	    </table>
