@@ -31,6 +31,7 @@
 		                    <th>Dst</th>
 		                    <th>Op 1</th>
 		                    <th>Op 2</th>
+		                    <th></th>
 		                </tr>
 		            </thead>
 		            <tbody>
@@ -40,6 +41,11 @@
 		                    <td>{{i.dst}}</td>
 		                    <td>{{i.op1}}</td>
 		                    <td>{{i.op2}}</td>
+		                    <td>
+			                    <button type="button" class="btn btn-default btn-xs" ng-click="ctrl.delete(i)">
+									<span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span> delete
+								</button>
+		                    </td>
 		                </tr>
 		            </tbody>
 		        </table>

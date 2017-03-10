@@ -143,6 +143,10 @@ app.controller('InstController', function() {
     	this.updateBtns();
     };
 
+    this.delete = function(pos) {
+        this.instr_run.splice(this.instr_run.indexOf(pos),1);
+    }
+
     /**
     * Set method: 
     *   Disable "Instructions", "Cicles" and "Controls" button groups.
